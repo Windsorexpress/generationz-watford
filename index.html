@@ -439,13 +439,13 @@
         const TrustBar = () => (
             <div className="bg-brand-500 text-white py-2.5">
                 <div className="max-w-7xl mx-auto px-4 flex items-center justify-center flex-wrap gap-x-6 gap-y-1 text-xs md:text-sm font-semibold">
-                    <span className="flex items-center gap-1.5"><i className="fas fa-shield-halved"></i> No Fix, No Fee</span>
+                    <span className="flex items-center gap-1.5"><i className="fas fa-gem"></i> Premium-Grade Parts</span>
                     <span className="text-white/30 hidden md:block">·</span>
-                    <span className="flex items-center gap-1.5"><i className="fas fa-clock"></i> 30-Min Repairs</span>
+                    <span className="flex items-center gap-1.5"><i className="fas fa-user-shield"></i> Certified Technicians</span>
                     <span className="text-white/30 hidden md:block">·</span>
                     <span className="flex items-center gap-1.5"><i className="fas fa-medal"></i> 12-Month Warranty</span>
                     <span className="text-white/30 hidden md:block">·</span>
-                    <span className="flex items-center gap-1.5"><i className="fas fa-lock"></i> Data Safe Guarantee</span>
+                    <span className="flex items-center gap-1.5"><i className="fas fa-star"></i> 5-Star Rated in Watford</span>
                 </div>
             </div>
         );
@@ -453,9 +453,9 @@
             <div className="bg-gray-900 py-12">
                 <div className="max-w-4xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                     {[
+                        { num: "100%", label: "Premium Parts",   icon: "fa-gem"           },
                         { num: "500+", label: "Repairs Done",    icon: "fa-wrench"        },
-                        { num: "~30",  label: "Min Fix Time",    icon: "fa-clock"         },
-                        { num: "4.6★", label: "Google Rating",  icon: "fa-star"          },
+                        { num: "4.6★", label: "Google Rated",   icon: "fa-star"          },
                         { num: "12mo", label: "Warranty",        icon: "fa-shield-halved" }
                     ].map(({ num, label, icon }, i) => (
                         <div key={i} className="stat-num" style={{ animationDelay: `${i * 0.1}s` }}>
@@ -472,7 +472,7 @@
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-14">
                         <h2 className="font-display text-5xl md:text-6xl font-black text-gray-900 mb-2">How It Works</h2>
-                        <p className="text-gray-400 font-medium text-lg">Three steps from broken to fixed</p>
+                        <p className="text-gray-400 font-medium text-lg">Premium service, start to finish</p>
                     </div>
                     <div className="flex flex-col md:flex-row items-start gap-6 md:gap-0">
                         {[
@@ -1355,19 +1355,52 @@
                                 <div className="relative max-w-4xl mx-auto">
                                     <div className="inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-700 text-sm font-bold px-4 py-2 rounded-full mb-8">
                                         <span className="live-dot"></span>
-                                        Open now · The Parade, Watford
+                                        Watford's Premium Repair Specialists · The Parade
                                     </div>
                                     <h1 className="font-display text-7xl md:text-8xl lg:text-[108px] font-black text-gray-900 leading-none mb-5">
-                                        Fixed fast.<br/>
-                                        <span className="text-brand-500">Priced fair.</span>
+                                        Repaired right.<br/>
+                                        <span className="text-brand-500">First time, every time.</span>
                                     </h1>
                                     <p className="text-gray-500 text-lg md:text-xl font-medium mb-12 max-w-xl mx-auto leading-relaxed">
-                                        Phone &amp; tablet repairs, quality devices to buy, and Watford's best vape range — all under one roof on <strong className="text-gray-800">The Parade</strong>.
+                                        Watford's most trusted phone &amp; tablet repairs — using only <strong className="text-gray-800">premium, genuine-grade parts</strong>, fitted by certified technicians and backed by a 12-month warranty. Quality you can rely on.
                                     </p>
                                     {renderFunnel()}
                                 </div>
                             </section>
                             <StatsBar />
+                            {/* WHY US — PREMIUM / QUALITY PARTS */}
+                            <section className="py-20 bg-white px-4">
+                                <div className="max-w-6xl mx-auto">
+                                    <div className="text-center mb-14">
+                                        <div className="inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-700 text-sm font-bold px-4 py-2 rounded-full mb-5">
+                                            <i className="fas fa-gem"></i> The Premium Difference
+                                        </div>
+                                        <h2 className="font-display text-5xl md:text-6xl font-black text-gray-900 mb-3">Why Watford Trusts Us</h2>
+                                        <p className="text-gray-400 font-medium text-lg max-w-2xl mx-auto">Anyone can fix a screen cheap. We do it <strong className="text-gray-600">properly</strong> — premium parts, certified technicians, and a warranty that means it.</p>
+                                    </div>
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                        {[
+                                            { icon: 'fa-gem',            title: 'Premium-Grade Parts',   body: 'We never fit cheap, low-quality parts. Only premium, genuine-grade components that look, feel and perform exactly like the original.' },
+                                            { icon: 'fa-user-shield',    title: 'Certified Technicians', body: 'Every repair is done by trained, experienced technicians — not a quick patch-up, but a proper, lasting fix you can rely on.' },
+                                            { icon: 'fa-clipboard-check',title: 'Rigorously Tested',     body: 'Every device is fully tested before it leaves the shop, so you walk out with a phone that works flawlessly.' },
+                                            { icon: 'fa-medal',          title: '12-Month Warranty',     body: 'We stand behind our work with a full 12-month warranty on parts and labour. Complete peace of mind, every time.' }
+                                        ].map(({ icon, title, body }, i) => (
+                                            <div key={i} className="bg-gray-50 border border-gray-100 rounded-3xl p-7 hover:shadow-lg transition-shadow">
+                                                <div className="w-14 h-14 bg-brand-500 text-white rounded-2xl flex items-center justify-center text-2xl mb-5 shadow-lg">
+                                                    <i className={`fas ${icon}`}></i>
+                                                </div>
+                                                <h3 className="font-display text-2xl font-black text-gray-900 mb-2 leading-tight">{title}</h3>
+                                                <p className="text-gray-500 text-sm font-medium leading-relaxed">{body}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-10 text-center">
+                                        <button onClick={() => setView('booking')} className="bg-brand-500 hover:bg-brand-600 text-white font-display font-black text-xl px-8 py-4 rounded-2xl shadow-lg transition-colors">
+                                            Book a Premium Repair →
+                                        </button>
+                                    </div>
+                                </div>
+                            </section>
                             <HowItWorks />
                             {/* BUY A PHONE */}
                             <section className="py-16 bg-white border-t border-gray-100 px-4">
@@ -1532,59 +1565,4 @@
                     )}
                     {view === 'sell' && (
                         <main className="py-12 bg-gray-50 flex-1 px-4">
-                            <div className="max-w-7xl mx-auto">{renderSellPage()}</div>
-                        </main>
-                    )}
-                    {view === 'shop' && (
-                        <main className="py-12 bg-gray-50 flex-1 px-4">
-                            <div className="max-w-7xl mx-auto">{renderShop()}</div>
-                        </main>
-                    )}
-                    {view === 'checkout' && (
-                        <main className="py-12 bg-gray-50 flex-1 px-4">
-                            <div className="max-w-7xl mx-auto">{renderCheckout()}</div>
-                        </main>
-                    )}
-                    {/* FOOTER */}
-                    <footer className="bg-gray-900 text-white pt-16 pb-8">
-                        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-10 mb-12">
-                            <div>
-                                <div className="flex items-center mb-4">
-                                    <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center mr-2 text-white text-xs"><i className="fas fa-bolt"></i></div>
-                                    <span className="font-display text-xl font-black">GEN <span className="text-brand-400">Z</span></span>
-                                </div>
-                                <p className="text-gray-400 text-sm font-medium leading-relaxed">Watford's most trusted phone repair shop. Fast, fair, and fully guaranteed.</p>
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-xs uppercase tracking-widest text-gray-500 mb-4">Contact</h3>
-                                <p className="text-gray-400 text-sm mb-2 font-medium">75 The Parade, Watford WD17 1LN</p>
-                                <a href={`tel:${SHOP_PHONE}`} className="text-white font-bold hover:text-brand-400 transition-colors flex items-center gap-2 text-sm">
-                                    <i className="fas fa-phone text-brand-500 text-xs"></i> 01923 218234
-                                </a>
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-xs uppercase tracking-widest text-gray-500 mb-4">Opening Hours</h3>
-                                <div className="space-y-2 text-sm text-gray-400 font-medium">
-                                    <p>Mon – Sat: 10:00 AM – 8:00 PM</p>
-                                    <p>Sunday: 10:30 AM – 7:00 PM</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="max-w-7xl mx-auto px-4 border-t border-gray-800 pt-8 text-center text-gray-600 text-xs font-medium leading-relaxed">
-                            <p className="mb-2">
-                                <strong className="text-gray-500">Services:</strong> iPhone Screen Repair · Samsung Battery Replacement · iPad Repairs · Water Damage · Charging Port Fix · Buy Refurbished Phones · Cash for Phones · Device Trade-In · Premium Vapes
-                            </p>
-                            <p className="mb-4">
-                                <strong className="text-gray-500">Areas Served:</strong> Watford · Bushey · Rickmansworth · Croxley Green · Garston · Hertfordshire
-                            </p>
-                            <p>&copy; 2026 Generation Z Mobile & Vape. All rights reserved.</p>
-                        </div>
-                    </footer>
-                </div>
-            );
-        };
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-    </script>
-</body>
-</html>
-     
+       
