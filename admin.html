@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Generation Z Mobile & Vape — Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<script>
+  tailwind.config = { theme: { extend: { colors: {
+    brand: { 50:'#fff7ed',100:'#ffedd5',400:'#fb923c',500:'#f97316',600:'#ea580c',700:'#c2410c',900:'#7c2d12' }
+  }}}};
+</script>
+<style> body{font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;} .tab-active{background:#f97316;color:#fff;} </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
+
+<!-- ============ CONFIG ============ -->
+<script>
+  const SUPABASE_URL  = "https://YOUR-PROJECT-REF.supabase.co";
+  const SUPABASE_ANON = "YOUR-SUPABASE-ANON-KEY";
+  const ADMIN_FN = `${SUPABASE_URL}/functions/v1/admin`;
+</script>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="login" class="min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8">
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-500 text-white text-2xl mb-3"><i class="fas fa-lock"></i></div>
+      <h1 class="text-xl font-extrabold text-gray-900">Generation Z Mobile & Vape</h1>
+      <p class="text-sm text-gray-500">Admin dashboard</p>
+    </div>
+    <form id="loginForm">
+      <input id="pw" type="password" placeholder="Admin password" autocomplete="current-password"
+        class="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:ring-2 focus:ring-brand-500 focus:outline-none" required />
+      <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-lg transition">Log in</button>
+      <p id="loginErr" class="text-center text-sm text-red-500 mt-3 hidden">Wrong password. Try again.</p>
+    </form>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="app" class="hidden">
+  <header class="bg-white border-b sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2 font-extrabold text-gray-900">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-brand-500 text-white"><i class="fas fa-bolt"></i></span>
+        Generation Z Mobile & Vape <span class="text-gray-400 font-medium hidden sm:inline">Admin</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="loadAll()" class="text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 px-3 py-2 rounded-lg"><i class="fas fa-rotate"></i> Refresh</button>
+        <button onclick="logout()" class="text-sm font-semibold text-gray-500 hover:text-gray-800 px-3 py-2 rounded-lg">Log out</button>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto px-4 flex gap-1 overflow-x-auto">
+      <button data-tab="bookings" class="tabbtn tab-active text-sm font-bold px-4 py-2.5 rounded-t-lg whitespace-nowrap">Repairs <span class="badge"></span></button>
+      <button data-tab="orders"   class="tabbtn text-sm font-bold px-4 py-2.5 rounded-t-lg whitespace-nowrap text-gray-500">Phone Orders <span class="badge"></span></button>
+      <button data-tab="sells"    class="tabbtn text-sm font-bold px-4 py-2.5 rounded-t-lg whitespace-nowrap text-gray-500">Sell Enquiries <span class="badge"></span></button>
+      <button data-tab="phones"   class="tabbtn text-sm font-bold px-4 py-2.5 rounded-t-lg whitespace-nowrap text-gray-500">Phones for Sale <span class="badge"></span></button>
+      <button data-tab="prices"   class="tabbtn text-sm font-bold px-4 py-2.5 rounded-t-lg whitespace-nowrap text-gray-500">Repair Prices <span class="badge"></span></button>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    <div id="loading" class="text-center text-gray-400 py-16 hidden"><i class="fas fa-circle-notch fa-spin text-2xl"></i><p class="mt-2 text-sm">Loading…</p></div>
+    <div id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"></div>
+    <div id="tab-bookings"></div>
+    <div id="tab-orders" class="hidden"></div>
+    <div id="tab-sells" class="hidden"></div>
+    <div id="tab-phones" class="hidden"></div>
+    <div id="tab-prices" class="hidden"></div>
+  </main>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+let STORE = { bookings:[], orders:[], sell_inquiries:[], phones:[], repair_prices:[] };
+let PW = sessionStorage.getItem("we_admin_pw") || "";
+
+const gbp = (n) => "£" + (Number(n)||0).toFixed(2);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dt  = (s) => { try { return new Date(s).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); } catch { return s; } };
+
+async function api(action, extra = {}) {
+  const res = await fetch(ADMIN_FN, {
+    method: "POST",
+    headers: { "Content-Type":"application/json", "Authorization":`Bearer ${SUPABASE_ANON}`, "apikey": SUPABASE_ANON },
+    body: JSON.stringify({ password: PW, action, ...extra })
+  });
+  if (res.status === 401) throw new Error("unauthorized");
+  return res.json();
+}
+
+/* ---------- LOGIN ---------- */
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  PW = $("#pw").value;
+  try {
+    await loadAll(true);
+    sessionStorage.setItem("we_admin_pw", PW);
+    $("#login").classList.add("hidden");
+    $("#app").classList.remove("hidden");
+  } catch {
+    $("#loginErr").classList.remove("hidden");
+  }
+});
+function logout(){ sessionStorage.removeItem("we_admin_pw"); location.reload(); }
+
+/* ---------- LOAD ---------- */
+async function loadAll(silent){
+  if(!silent){ $("#loading").classList.remove("hidden"); }
+  const data = await api("overview");
+  if (data.error) throw new Error(data.error);
+  STORE = data;
+  $("#loading").classList.add("hidden");
+  renderAll();
+  updateBadges();
+}
+
+function updateBadges(){
+  const counts = {
+    bookings: STORE.bookings.filter(b=>!b.done).length,
+    orders:   STORE.orders.filter(o=>!o.done).length,
+    sells:    STORE.sell_inquiries.filter(s=>!s.done).length,
+    phones:   STORE.phones.length,
+  };
+  document.querySelectorAll(".tabbtn").forEach(btn => {
+    const c = counts[btn.dataset.tab];
+    const b = btn.querySelector(".badge");
+    b.textContent = c ? c : "";
+    b.className = "badge " + (c ? "ml-1 inline-block min-w-[20px] text-center text-xs bg-red-500 text-white rounded-full px-1.5 py-0.5" : "");
+  });
+}
+
+/* ---------- TABS ---------- */
+document.querySelectorAll(".tabbtn").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll(".tabbtn").forEach(b => { b.classList.remove("tab-active"); b.classList.add("text-gray-500"); });
+  btn.classList.add("tab-active"); btn.classList.remove("text-gray-500");
+  ["bookings","orders","sells","phones","prices"].forEach(t => $("#tab-"+t).classList.add("hidden"));
+  $("#tab-"+btn.dataset.tab).classList.remove("hidden");
+}));
+
+/* ---------- RENDER ---------- */
+function renderAll(){ renderStats(); renderBookings(); renderOrders(); renderSells(); renderPhones(); renderPrices(); }
+
+function isToday(s){ const d=new Date(s), n=new Date(); return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth()&&d.getDate()===n.getDate(); }
+function statCard(label, value, sub, icon, color){
+  return `<div class="bg-white rounded-xl shadow-sm border p-4">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wide text-gray-400">${label}</span>
+      <i class="fas ${icon} ${color}"></i>
+    </div>
+    <div class="text-3xl font-extrabold text-gray-900 mt-1">${value}</div>
+    <div class="text-xs text-gray-400 mt-0.5">${sub}</div>
+  </div>`;
+}
+function renderStats(){
+  const bk=STORE.bookings, od=STORE.orders, sl=STORE.sell_inquiries;
+  const repTodayCount = bk.filter(b=>isToday(b.created_at)).length;
+  const repOpen       = bk.filter(b=>!b.done).length;
+  const ordToday      = od.filter(o=>isToday(o.created_at)).length;
+  const unpaid        = bk.filter(b=>b.payment_status!=='paid'&&!b.done).length + od.filter(o=>o.payment_status!=='paid'&&!o.done).length;
+  const newSells      = sl.filter(s=>!s.done).length;
+  $("#stats").innerHTML =
+    statCard("Repairs today", repTodayCount, `${repOpen} open in total`, "fa-screwdriver-wrench", "text-brand-500") +
+    statCard("Phone orders today", ordToday, `${od.length} orders all-time`, "fa-mobile-screen", "text-blue-500") +
+    statCard("Awaiting payment", unpaid, "repairs + orders unpaid", "fa-coins", "text-amber-500") +
+    statCard("New sell enquiries", newSells, `${sl.length} all-time`, "fa-hand-holding-dollar", "text-purple-500");
+}
+
+function payBadge(s){ return s === "paid"
+  ? '<span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">PAID</span>'
+  : '<span class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">Unpaid</span>'; }
+function methodLabel(m){ return m === "online" ? "Online" : "In store"; }
+
+function card(inner, done){ return `<div class="bg-white rounded-xl shadow-sm border ${done?'opacity-60':''} p-4 mb-3">${inner}</div>`; }
+function empty(msg){ return `<div class="text-center text-gray-400 py-16"><i class="fas fa-inbox text-3xl mb-2"></i><p>${msg}</p></div>`; }
+
+function actionsRow(table, r){
+  const paidBtn = r.payment_status === "paid" ? "" :
+    `<button onclick="markPaid('${table}','${r.id}')" class="text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 px-3 py-1.5 rounded-lg">Mark paid</button>`;
+  const doneBtn = `<button onclick="setDone('${table}','${r.id}',${!r.done})" class="text-xs font-bold ${r.done?'text-gray-500 bg-gray-100':'text-brand-700 bg-brand-50 hover:bg-brand-100'} px-3 py-1.5 rounded-lg">${r.done?'↩ Reopen':'✓ Mark done'}</button>`;
+  return `<div class="flex gap-2 mt-3">${paidBtn}${doneBtn}</div>`;
+}
+
+function renderBookings(){
+  const el = $("#tab-bookings");
+  if(!STORE.bookings.length) return el.innerHTML = empty("No repair bookings yet.");
+  el.innerHTML = STORE.bookings.map(b => card(`
+    <div class="flex justify-between items-start gap-3">
+      <div>
+        <div class="font-extrabold text-gray-900">${esc(b.brand)} ${esc(b.model||'')} ${b.done?'<span class=\"text-xs text-gray-400\">(done)</span>':''}</div>
+        <div class="text-sm text-gray-500">${esc(b.issue)} ${b.quality?'· '+esc(b.quality):''} · ${esc(b.service_type||'')}</div>
+      </div>
+      <div class="text-right"><div class="font-extrabold">${gbp(b.total_amount)}</div>${payBadge(b.payment_status)}</div>
+    </div>
+    <div class="text-sm text-gray-600 mt-2 border-t pt-2">
+      <i class="fas fa-user text-gray-400"></i> ${esc(b.name)} ·
+      <a href="tel:${esc(b.phone)}" class="text-brand-700 font-semibold">${esc(b.phone)}</a> ·
+      <a href="mailto:${esc(b.email)}" class="text-brand-700">${esc(b.email)}</a>
+      ${b.address?'<br><i class="fas fa-location-dot text-gray-400"></i> '+esc(b.address):''}
+      <br><span class="text-gray-400 text-xs">${dt(b.created_at)} · Payment: ${methodLabel(b.payment_method)} ${b.time_slot?'· '+esc(b.time_slot):''}</span>
+    </div>
+    ${actionsRow('bookings', b)}
+  `, b.done)).join("");
+}
+
+function renderOrders(){
+  const el = $("#tab-orders");
+  if(!STORE.orders.length) return el.innerHTML = empty("No phone orders yet.");
+  el.innerHTML = STORE.orders.map(o => card(`
+    <div class="flex justify-between items-start gap-3">
+      <div>
+        <div class="font-extrabold text-gray-900">${esc(o.product_name)} ${o.done?'<span class=\"text-xs text-gray-400\">(done)</span>':''}</div>
+        <div class="text-sm text-gray-500">${o.fulfillment==='postage'?'📮 UK Postage':'🏬 Collect in store'}</div>
+      </div>
+      <div class="text-right"><div class="font-extrabold">${gbp(o.total_amount)}</div>${payBadge(o.payment_status)}</div>
+    </div>
+    <div class="text-sm text-gray-600 mt-2 border-t pt-2">
+      <i class="fas fa-user text-gray-400"></i> ${esc(o.name)} ·
+      <a href="tel:${esc(o.phone)}" class="text-brand-700 font-semibold">${esc(o.phone)}</a> ·
+      <a href="mailto:${esc(o.email)}" class="text-brand-700">${esc(o.email)}</a>
+      ${o.address?'<br><i class="fas fa-location-dot text-gray-400"></i> '+esc(o.address):''}
+      <br><span class="text-gray-400 text-xs">${dt(o.created_at)} · Payment: ${methodLabel(o.payment_method)}</span>
+    </div>
+    ${actionsRow('orders', o)}
+  `, o.done)).join("");
+}
+
+function renderSells(){
+  const el = $("#tab-sells");
+  if(!STORE.sell_inquiries.length) return el.innerHTML = empty("No sell enquiries yet.");
+  el.innerHTML = STORE.sell_inquiries.map(s => card(`
+    <div class="flex justify-between items-start gap-3">
+      <div>
+        <div class="font-extrabold text-gray-900">${esc(s.device)} ${s.done?'<span class=\"text-xs text-gray-400\">(done)</span>':''}</div>
+        <div class="text-sm text-gray-500">Condition: ${esc(s.condition||'—')}</div>
+      </div>
+      <button onclick="setDone('sell_inquiries','${s.id}',${!s.done})" class="text-xs font-bold ${s.done?'text-gray-500 bg-gray-100':'text-brand-700 bg-brand-50 hover:bg-brand-100'} px-3 py-1.5 rounded-lg h-fit">${s.done?'↩ Reopen':'✓ Done'}</button>
+    </div>
+    <div class="text-sm text-gray-600 mt-2 border-t pt-2">
+      <i class="fas fa-user text-gray-400"></i> ${esc(s.name)} ·
+      <a href="tel:${esc(s.phone)}" class="text-brand-700 font-semibold">${esc(s.phone)}</a> ·
+      <a href="mailto:${esc(s.email)}" class="text-brand-700">${esc(s.email)}</a>
+      <br><span class="text-gray-400 text-xs">${dt(s.created_at)}</span>
+    </div>
+  `, s.done)).join("");
+}
+
+/* ---------- PHONES (manage inventory) ---------- */
+function phoneForm(p){
+  const v = p || { id:"", name:"", storage:"", color:"", condition:"", price:"", image_url:"", description:"", stock:1 };
+  const f = (k, ph, extra="") => `<input data-k="${k}" value="${esc(v[k]??'')}" placeholder="${ph}" ${extra} class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full" />`;
+  return `<div class="bg-white rounded-xl shadow-sm border p-4 mb-3 phone-row" data-id="${esc(v.id)}">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+      ${f('name','Name e.g. iPhone 13 Pro')}
+      ${f('storage','Storage e.g. 128GB')}
+      ${f('color','Colour')}
+      ${f('condition','Condition')}
+      ${f('price','Price £','type="number" step="0.01"')}
+      ${f('stock','Stock (0 hides it)','type="number" step="1"')}
+      <div class="col-span-2">${f('image_url','Image URL (optional)')}</div>
+      <div class="col-span-2 md:col-span-4">${f('description','Short description')}</div>
+    </div>
+    <div class="flex gap-2 mt-3">
+      <button onclick="savePhone(this)" class="text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 px-4 py-2 rounded-lg"><i class="fas fa-floppy-disk"></i> Save</button>
+      ${v.id?`<button onclick="deletePhone('${esc(v.id)}')" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-lg"><i class="fas fa-trash"></i> Delete</button>`:''}
+      ${v.id&&Number(v.stock)===0?'<span class="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-2 rounded-lg self-center">Hidden from shop</span>':''}
+    </div>
+  </div>`;
+}
+function renderPhones(){
+  const el = $("#tab-phones");
+  el.innerHTML = `
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-extrabold text-gray-900">Phones for sale</h2>
+      <span class="text-sm text-gray-400">${STORE.phones.length} listed</span>
+    </div>
+    <div class="bg-brand-50 border border-brand-100 rounded-xl p-4 mb-5">
+      <p class="text-sm font-bold text-brand-700 mb-2"><i class="fas fa-plus"></i> Add a new phone</p>
+      <div id="newPhone">${phoneForm(null)}</div>
+    </div>
+    <div id="phoneList">${STORE.phones.map(p => phoneForm(p)).join("")}</div>`;
+}
+
+/* ---------- REPAIR PRICES (manage screen-repair prices) ---------- */
+const PRICE_BRANDS = ['Apple iPhone','Samsung','iPad','Tablet'];
+function priceRow(p, brandPreset){
+  const v = p || { id:"", brand:brandPreset||"", model:"", lcd:"", fhd:"", oled:"", battery:"", back_glass:"", charging_port:"", rear_camera:"", speaker:"" };
+  const f = (k, lbl) => `<label class="block"><span class="block text-[10px] font-bold uppercase text-gray-400 mb-0.5">${lbl}</span><input data-k="${k}" value="${esc(v[k]??'')}" type="number" step="0.01" placeholder="—" class="border border-gray-300 rounded-md px-2 py-1.5 text-sm w-full" /></label>`;
+  return `<div class="price-row bg-white border rounded-lg p-3 mb-2" data-id="${esc(v.id)}" data-brand="${esc(v.brand||brandPreset||'')}">
+    <div class="flex flex-wrap md:flex-nowrap items-end gap-2">
+      <label class="block w-full md:flex-1 min-w-[150px]"><span class="block text-[10px] font-bold uppercase text-gray-400 mb-0.5">Model</span>
+        <input data-k="model" value="${esc(v.model??'')}" placeholder="Model name" class="border border-gray-300 rounded-md px-2 py-1.5 text-sm w-full" /></label>
+      <div class="flex gap-1.5">
+        <button onclick="savePrice(this)" class="text-xs font-bold text-white bg-brand-500 hover:bg-brand-600 px-3 py-2 rounded-md">Save</button>
+        ${v.id?`<button onclick="deletePrice('${esc(v.id)}')" class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-2.5 py-2 rounded-md"><i class="fas fa-trash"></i></button>`:''}
+      </div>
+    </div>
+    <div class="grid grid-cols-4 md:grid-cols-8 gap-2 mt-2">
+      ${f('lcd','Scr LCD')}${f('fhd','Scr FHD')}${f('oled','Scr OLED')}${f('battery','Battery')}${f('back_glass','Back Glass')}${f('charging_port','Charging')}${f('rear_camera','Camera')}${f('speaker','Speaker')}
+    </div>
+  </div>`;
+}
+function renderPrices(){
+  const el = $("#tab-prices");
+  const byBrand = {};
+  STORE.repair_prices.forEach(r => { (byBrand[r.brand] = byBrand[r.brand] || []).push(r); });
+  const brands = [...PRICE_BRANDS, ...Object.keys(byBrand).filter(b => !PRICE_BRANDS.includes(b))];
+  el.innerHTML = `
+    <div class="mb-4">
+      <h2 class="font-extrabold text-gray-900">Repair prices</h2>
+      <p class="text-sm text-gray-500">Set a price (£) per repair for each model. Screen has three quality tiers (LCD / FHD / OLED); the rest are a single price. Leave a box blank for "call for quote". Changes go live instantly.</p>
+    </div>
+    ${brands.map(b => {
+      const rows = byBrand[b] || [];
+      return `<details ${b==='Apple iPhone'?'open':''} class="mb-3 bg-gray-50 border rounded-xl p-3">
+        <summary class="cursor-pointer font-bold text-gray-800 select-none">${esc(b)} <span class="text-gray-400 font-medium text-sm">(${rows.length})</span></summary>
+        <div class="mt-3">
+          ${rows.map(r => priceRow(r)).join("")}
+          <div class="bg-brand-50 border border-brand-100 rounded-lg p-2 mt-2">
+            <p class="text-xs font-bold text-brand-700 mb-1"><i class="fas fa-plus"></i> Add a ${esc(b)} model</p>
+            ${priceRow(null, b)}
+          </div>
+        </div>
+      </details>`;
+    }).join("")}`;
+}
+
+/* ---------- ACTIONS ---------- */
+async function markPaid(table, id){ await api("mark_paid", { table, id }); await loadAll(true); }
+async function setDone(table, id, value){ await api("set_done", { table, id, value }); await loadAll(true); }
+async function deletePhone(id){ if(!confirm("Delete this phone listing?")) return; await api("phone_delete", { id }); await loadAll(true); }
+async function savePhone(btn){
+  const row = btn.closest(".phone-row");
+  const phone = { id: row.dataset.id || null };
+  row.querySelectorAll("[data-k]").forEach(i => phone[i.dataset.k] = i.value);
+  if(!phone.name){ alert("Please enter a phone name."); return; }
+  btn.disabled = true; btn.textContent = "Saving…";
+  await api("phone_save", { phone });
+  await loadAll(true);
+}
+async function deletePrice(id){ if(!confirm("Delete this model from the price list?")) return; await api("repair_delete", { id }); await loadAll(true); }
+async function savePrice(btn){
+  const row = btn.closest(".price-row");
+  const repair = { id: row.dataset.id || null, brand: row.dataset.brand || "" };
+  row.querySelectorAll("[data-k]").forEach(i => repair[i.dataset.k] = i.value);
+  if(!repair.model){ alert("Please enter a model name."); return; }
+  if(!repair.brand){ alert("Missing brand."); return; }
+  btn.disabled = true; btn.textContent = "…";
+  await api("repair_save", { repair });
+  await loadAll(true);
+}
+
+/* ---------- auto-login if password remembered ---------- */
+(async () => {
+  if (PW) {
+    try { await loadAll(true); $("#login").classList.add("hidden"); $("#app").classList.remove("hidden"); }
+    catch { sessionStorage.removeItem("we_admin_pw"); PW=""; }
+  }
+})();
+</script>
+</body>
+</html>
