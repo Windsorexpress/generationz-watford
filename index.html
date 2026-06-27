@@ -208,6 +208,7 @@
         .tier-lcd  { border-left: 4px solid #f59e0b; }
         .tier-fhd  { border-left: 4px solid #3b82f6; }
         .tier-oled { border-left: 4px solid #f97316; }
+        .tier-original { border-left: 4px solid #1c160f; }
         /* WhatsApp */
         .whatsapp-btn {
             position: fixed; bottom: 24px; right: 24px;
@@ -268,32 +269,33 @@
 
         // --- IPHONE PRICING ---
         const IPHONE_PRICES = {
-            "X / Xs / XR / 11":    { lcd: 39.99, oled: 59.99 },
-            "Xs Max":               { lcd: 44.99, oled: 64.99 },
-            "11 Pro":               { lcd: 44.99, oled: 64.99 },
-            "11 Pro Max":           { lcd: 49.99, oled: 69.99 },
-            "12 / 12 Mini":         { lcd: 49.99, oled: 74.99 },
-            "12 Pro / 12 Pro Max":  { lcd: 54.99, oled: 79.99 },
-            "13 / 13 Mini":         { lcd: 54.99, oled: 84.99 },
-            "13 Pro":               { lcd: 64.99, fhd: 79.99,  oled: 134.99 },
-            "13 Pro Max":           { lcd: 69.99, fhd: 84.99,  oled: 139.99 },
-            "14 / 14 Plus":         { lcd: 59.99, oled: 94.99 },
-            "14 Pro":               { lcd: 69.99, fhd: 89.99,  oled: 149.99 },
-            "14 Pro Max":           { lcd: 79.99, fhd: 99.99,  oled: 154.99 },
-            "15 / 15 Plus":         { lcd: 74.99, fhd: 94.99,  oled: 154.99 },
-            "15 Pro":               { lcd: 79.99, fhd: 99.99,  oled: 159.99 },
-            "15 Pro Max":           { lcd: 89.99, fhd: 109.99, oled: 169.99 },
-            "16 / 16 Plus":         { lcd: 94.99, fhd: 114.99, oled: 174.99 },
-            "16 Pro":               { lcd: 109.99, fhd: 129.99, oled: 219.99 },
-            "16 Pro Max":           { lcd: 119.99, fhd: 139.99, oled: 229.99 },
-            "17":                   { fhd: 169.99, oled: 249.99 },
-            "17 Pro":               { fhd: 179.99, oled: 279.99 },
-            "17 Pro Max":           { fhd: 189.99, oled: 289.99 }
+            "X / Xs / XR / 11":    { lcd: 39.99, oled: 59.99, original: 99.99 },
+            "Xs Max":               { lcd: 44.99, oled: 64.99, original: 109.99 },
+            "11 Pro":               { lcd: 44.99, oled: 64.99, original: 109.99 },
+            "11 Pro Max":           { lcd: 49.99, oled: 69.99, original: 119.99 },
+            "12 / 12 Mini":         { lcd: 49.99, oled: 74.99, original: 124.99 },
+            "12 Pro / 12 Pro Max":  { lcd: 54.99, oled: 79.99, original: 134.99 },
+            "13 / 13 Mini":         { lcd: 54.99, oled: 84.99, original: 139.99 },
+            "13 Pro":               { lcd: 64.99, fhd: 79.99,  oled: 134.99, original: 199.99 },
+            "13 Pro Max":           { lcd: 69.99, fhd: 84.99,  oled: 139.99, original: 209.99 },
+            "14 / 14 Plus":         { lcd: 59.99, oled: 94.99, original: 159.99 },
+            "14 Pro":               { lcd: 69.99, fhd: 89.99,  oled: 149.99, original: 219.99 },
+            "14 Pro Max":           { lcd: 79.99, fhd: 99.99,  oled: 154.99, original: 229.99 },
+            "15 / 15 Plus":         { lcd: 74.99, fhd: 94.99,  oled: 154.99, original: 224.99 },
+            "15 Pro":               { lcd: 79.99, fhd: 99.99,  oled: 159.99, original: 239.99 },
+            "15 Pro Max":           { lcd: 89.99, fhd: 109.99, oled: 169.99, original: 259.99 },
+            "16 / 16 Plus":         { lcd: 94.99, fhd: 114.99, oled: 174.99, original: 259.99 },
+            "16 Pro":               { lcd: 109.99, fhd: 129.99, oled: 219.99, original: 309.99 },
+            "16 Pro Max":           { lcd: 119.99, fhd: 139.99, oled: 229.99, original: 329.99 },
+            "17":                   { fhd: 169.99, oled: 249.99, original: 349.99 },
+            "17 Pro":               { fhd: 179.99, oled: 279.99, original: 389.99 },
+            "17 Pro Max":           { fhd: 189.99, oled: 289.99, original: 399.99 }
         };
         const TIER_META = {
-            lcd:  { label: "LCD",  tagline: "Works perfectly – great value",       textColor: "text-amber-700", bg: "bg-amber-50",  border: "tier-lcd"  },
-            fhd:  { label: "FHD",  tagline: "Better colour & brightness",           textColor: "text-blue-700",  bg: "bg-blue-50",   border: "tier-fhd"  },
-            oled: { label: "OLED", tagline: "Original quality – best choice",       textColor: "text-brand-700", bg: "bg-brand-50",  border: "tier-oled" }
+            lcd:      { label: "LCD",      tagline: "Works perfectly – great value",     textColor: "text-amber-700", bg: "bg-amber-50",  border: "tier-lcd"  },
+            fhd:      { label: "FHD",      tagline: "Better colour & brightness",        textColor: "text-blue-700",  bg: "bg-blue-50",   border: "tier-fhd"  },
+            oled:     { label: "OLED",     tagline: "Best value – 95% of original",      textColor: "text-brand-700", bg: "bg-brand-50",  border: "tier-oled" },
+            original: { label: "Original", tagline: "Genuine part – flagship quality",   textColor: "text-ink",       bg: "bg-gray-50",   border: "tier-original" }
         };
         // Repair types shown in the funnel. 'Screen' is tiered; the rest are a single price.
         const REPAIR_TYPES = [
@@ -471,7 +473,7 @@
                         <h2 className="font-display text-5xl md:text-6xl font-black text-gray-900 mb-2">How It Works</h2>
                         <p className="text-gray-400 font-medium text-lg">Three steps from broken to fixed</p>
                     </div>
-                    <div className="flex flex-col md:flex-row items-start gap-6 md:gap-0">
+                    <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-0">
                         {[
                             { n: "01", title: "Book Online",      body: "Pick your device, describe the issue, and choose a time slot. Takes under 2 minutes.",           icon: "fa-calendar-check",       bg: "bg-brand-500"  },
                             { n: "02", title: "Drop It Off",      body: "Walk in at your chosen time on The Parade. No queuing — we're expecting you.",               icon: "fa-store",                bg: "bg-gray-800"   },
@@ -535,6 +537,7 @@
                 addons: [], paymentMethod: 'in_store'
             });
             const [isSubmitting, setIsSubmitting] = useState(false);
+            const [showQualityInfo, setShowQualityInfo] = useState(false);
             // Repair price list (loaded from DB; falls back to built-in iPhone list)
             const [repairPrices, setRepairPrices] = useState({ "Apple iPhone": IPHONE_PRICES });
             // Non-screen repair prices: { brand: { model: { battery, back_glass, charging_port, rear_camera, speaker } } }
@@ -589,6 +592,7 @@
                           if (r.lcd  != null) tiers.lcd  = Number(r.lcd);
                           if (r.fhd  != null) tiers.fhd  = Number(r.fhd);
                           if (r.oled != null) tiers.oled = Number(r.oled);
+                          if (r.original != null) tiers.original = Number(r.original);
                           grouped[r.brand][r.model] = tiers; // empty object = listed but quote-only
                           extras[r.brand][r.model] = {
                               battery: num(r.battery), back_glass: num(r.back_glass),
@@ -630,7 +634,7 @@
                 else setFunnelStep(4);
             };
             const handleQualitySelect = (key, price) => {
-                const label = key === 'lcd' ? 'LCD (Gold Box)' : key === 'fhd' ? 'FHD (Black Box)' : 'OLED (Red Box)';
+                const label = key === 'lcd' ? 'LCD (Gold Box)' : key === 'fhd' ? 'FHD (Black Box)' : key === 'oled' ? 'OLED (Red Box)' : 'Original (Genuine)';
                 setBookingData({ ...bookingData, quality: label, qualityKey: key, quotedPrice: `£${price.toFixed(2)}` });
                 setFunnelStep(4);
             };
@@ -870,7 +874,12 @@
                                 {/* Screen: quality tiers */}
                                 {bookingData.model && bookingData.issue === 'Screen' && modelHasTiers(bookingData.brand, bookingData.model) && (
                                     <div className="space-y-3">
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Screen Quality</label>
+                                        <div className="flex items-center justify-between mb-1 gap-2">
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Screen Quality</label>
+                                            <button type="button" onClick={() => setShowQualityInfo(true)} className="text-xs font-bold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1 transition-colors whitespace-nowrap">
+                                                <i className="fas fa-circle-info"></i> What's the difference?
+                                            </button>
+                                        </div>
                                         {Object.entries(repairPrices[bookingData.brand][bookingData.model]).map(([key, price]) => {
                                             const t = TIER_META[key];
                                             return (
@@ -884,6 +893,38 @@
                                                 </div>
                                             );
                                         })}
+                                    </div>
+                                )}
+                                {/* Quality explainer popup */}
+                                {showQualityInfo && (
+                                    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm fade-in" onClick={() => setShowQualityInfo(false)}>
+                                        <div className="bg-white rounded-2xl max-w-lg w-full max-h-[88vh] overflow-y-auto shadow-2xl text-left" onClick={e => e.stopPropagation()}>
+                                            <div className="sticky top-0 bg-white border-b border-gray-100 px-5 sm:px-6 py-4 flex items-center justify-between">
+                                                <h3 className="font-display text-xl sm:text-2xl font-black text-gray-900">Which screen is right for you?</h3>
+                                                <button onClick={() => setShowQualityInfo(false)} aria-label="Close" className="text-gray-300 hover:text-gray-600 text-2xl leading-none px-1"><i className="fas fa-xmark"></i></button>
+                                            </div>
+                                            <div className="px-5 sm:px-6 py-5 space-y-3.5">
+                                                <p className="text-sm text-gray-500 font-medium">We fit four grades of screen, so you choose the balance of price and quality that suits you. Every option includes our 12-month warranty.</p>
+                                                <div className="rounded-xl border border-amber-100 bg-amber-50/60 p-4">
+                                                    <span className="font-black text-amber-700">LCD <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full ml-1 align-middle">Budget</span></span>
+                                                    <p className="text-sm text-gray-600 font-medium mt-1">Our best-value fix — gets you up and running for less. Fully functional, but a little more fragile, and the colours and refresh rate aren't quite a match for the original.</p>
+                                                </div>
+                                                <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-4">
+                                                    <span className="font-black text-blue-700">FHD <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full ml-1 align-middle">Mid-range</span></span>
+                                                    <p className="text-sm text-gray-600 font-medium mt-1">A step up from LCD with noticeably better image quality and brightness — a solid middle-ground choice.</p>
+                                                </div>
+                                                <div className="rounded-xl border-2 border-brand-300 bg-brand-50 p-4 relative">
+                                                    <span className="absolute -top-2.5 right-3 text-[10px] font-black uppercase tracking-wider bg-brand-500 text-white px-2.5 py-1 rounded-full shadow">Most popular</span>
+                                                    <span className="font-black text-brand-700">OLED Aftermarket <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full ml-1 align-middle">Best value</span></span>
+                                                    <p className="text-sm text-gray-600 font-medium mt-1">The sweet spot for most people: around <span className="font-bold text-gray-800">95% of original quality at roughly 40% of the price</span>. True blacks, deep colour and the look you're used to — without the original price tag.</p>
+                                                </div>
+                                                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                                                    <span className="font-black text-ink">Original <span className="text-[10px] font-bold uppercase tracking-wider bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full ml-1 align-middle">Genuine</span></span>
+                                                    <p className="text-sm text-gray-600 font-medium mt-1">A genuine, original-grade part — identical to what your device left the factory with. The ultimate in colour accuracy, brightness and longevity, at the flagship price.</p>
+                                                </div>
+                                                <button onClick={() => setShowQualityInfo(false)} className="w-full bg-ink hover:bg-black text-white font-bold py-3.5 rounded-xl transition-colors mt-1">Got it</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
                                 {/* Single-price repairs (battery, back glass, charging port, camera, speaker) */}
@@ -1301,7 +1342,7 @@
                                 <div className="relative max-w-4xl mx-auto">
                                     <div className="inline-flex items-center gap-2.5 text-brand-700 mb-5 md:mb-7">
                                         <span className="live-dot"></span>
-                                        <span className="eyebrow text-[9px] sm:text-[11px]">Watford's Premium Repair Specialists · The Parade</span>
+                                        <span className="eyebrow text-[10px] sm:text-[11px]">Premium Repairs · Watford</span>
                                     </div>
                                     <h1 className="font-display text-[2.6rem] sm:text-6xl md:text-8xl lg:text-[108px] font-black text-gray-900 leading-[1.05] md:leading-none mb-4 md:mb-5">
                                         Repaired right.<br/>
