@@ -254,8 +254,8 @@
         const apiKey      = "YOUR-GEMINI-API-KEY";
 
         // --- SUPABASE (database)  >>> PASTE YOUR PROJECT VALUES (see SETUP-GUIDE) <<< ---
-        const SUPABASE_URL      = "https://YOUR-PROJECT-REF.supabase.co";
-        const SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY";
+        const SUPABASE_URL      = "https://xszinnlawalaplzlamtn.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhzemlubmxhd2FsYXBsemxhbXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2MzU2MDUsImV4cCI6MjA5ODIxMTYwNX0.Oc-Qax_WmkqzgRhDBxCBMeOEHHW7qitoajOq_Aske_s";
         const CHECKOUT_FN_URL   = `${SUPABASE_URL}/functions/v1/create-checkout`;
         const SB_READY = SUPABASE_URL.indexOf("YOUR-") === -1 && typeof window.supabase !== "undefined";
         const sb = SB_READY ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
