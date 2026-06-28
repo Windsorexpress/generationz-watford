@@ -1,0 +1,44 @@
+# Generation Z Mobile & Vape — robots.txt
+# Everyone is welcome to crawl the whole site.
+User-agent: *
+Allow: /
+
+# Explicitly welcome AI answer engines & their crawlers
+# (crawler access is the precondition for being cited in AI answers)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+Sitemap: https://generation-z.co.uk/sitemap.xml
