@@ -273,6 +273,7 @@
         const { useState, useEffect, useRef } = React;
         // --- CONFIG ---
         const OWNER_EMAIL = "Genzworld64@gmail.com";
+        const OWNER_EMAIL_CC = "windsorexpress02@gmail.com"; // also CC'd on every booking/enquiry/order
         const SHOP_PHONE  = "+447404676738";
         const apiKey      = "YOUR-GEMINI-API-KEY";
 
@@ -404,6 +405,7 @@
             try {
                 const fd = new FormData();
                 Object.entries(payload).forEach(([k, v]) => fd.append(k, v == null ? '' : String(v)));
+                if (OWNER_EMAIL_CC) fd.append('_cc', OWNER_EMAIL_CC); // copy the second mailbox on every email
                 const res = await fetch(`https://formsubmit.co/ajax/${OWNER_EMAIL}`, { method: "POST", body: fd });
                 return res.ok;
             } catch { return false; }
